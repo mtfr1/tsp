@@ -19,7 +19,10 @@ def second_min(adj, i):
 			second = adj[i][j]
 	return second
 
-def tsp_rec(adj, curr_bound, curr_weight, level, curr_path, visited, final_res, final_path):
+def tsp_rec(adj, curr_bound, curr_weight, level, curr_path):
+	global visited
+	global final_path
+	global final_res
 	N = len(adj)
 
 	if level == N:
@@ -30,9 +33,8 @@ def tsp_rec(adj, curr_bound, curr_weight, level, curr_path, visited, final_res, 
 
 			if curr_res < final_res:
 				final_path = curr_path
+				final_path[-1] = 0
 				final_res = curr_res
-		print(final_res)
-		print(final_path)
 		return
 	for i in range(N):
 
@@ -50,42 +52,47 @@ def tsp_rec(adj, curr_bound, curr_weight, level, curr_path, visited, final_res, 
 			if curr_bound + curr_weight < final_res:
 				curr_path[level] = i; 
 				visited[i] = 1;
-				tsp_rec(adj, curr_bound, curr_weight, level+1, curr_path, visited, final_res, final_path);  
+				tsp_rec(adj, curr_bound, curr_weight, level+1, curr_path)  
 
 			curr_weight -= adj[curr_path[level-1]][i]
 			curr_bound = temp
 
-			visited = np.zeros(N+1)
-			for j in range(level-1):
+			visited = np.zeros(N)
+			for j in range(level):
 				visited[curr_path[j]] = 1
 
 def TSP(adj):
-	final_res = np.inf
-	final_path = []
+	global visited
+	global final_path
+	global final_res
 	N = len(adj)
+	
 	curr_path = np.zeros(N+1)
 	for i in range(len(curr_path)):
 		curr_path[i] = -1
-
 	curr_path = curr_path.tolist()
-	visited = np.zeros(N+1)
-	visited = visited.tolist()
-	curr_bound = 0
 
+	curr_bound = 0
 	for i in range(N):
 		curr_bound = (first_min(adj, i) + second_min(adj, i))
-	
-	print(curr_bound & 1)
 
-	curr_bound = curr_bound//2 + 1 if curr_bound&1 else curr_bound/2
+	curr_bound = curr_bound//2 + 1 if curr_bound % 2 == 1 else curr_bound/2
 	visited[0] = 1
 	curr_path[0] = 0
 	
-	tsp_rec(adj, curr_bound, 0, 1, curr_path, visited, final_res, final_path)
+	tsp_rec(adj, curr_bound, 0, 1, curr_path)
+	print(final_res)
+	print(final_path)
+
+### MAIN
 
 adj = [[0, 10, 15, 20], 
        [10, 0, 35, 25], 
        [15, 35, 0, 30], 
        [20, 25, 30, 0]]
 
+N = len(adj)
+final_path = np.zeros(N+1,dtype=int)  
+visited = np.zeros(N,dtype=int)
+final_res = np.inf
 TSP(adj)
