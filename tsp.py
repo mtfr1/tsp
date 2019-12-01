@@ -53,11 +53,7 @@ def cost(nodes, G):
 ## BRANCH AND BOUND TSP
 
 def first_min(adj, i):
-    minimo = np.inf
-    for k in range(len(adj)):
-        if(adj[i][k] < minimo and i != k):
-            minimo = adj[i][k]
-    return minimo
+    return min(adj[i])
 
 def second_min(adj, i):
     first, second = np.inf, np.inf
@@ -117,7 +113,7 @@ def branch_and_bound(graph):
     
     G = graph.copy()
 
-    adj = nx.to_numpy_matrix(G, dtype='int')
+    adj = nx.to_numpy_matrix(G, dtype=int)
     adj = adj.tolist()
     N = len(adj)
 
